@@ -8,9 +8,9 @@ resource "aws_ecs_task_definition" "nodejs" {
   network_mode             = "awsvpc"
   cpu                      = 256
   memory                   = 512
-  task_role_arn = aws_iam_role.ecs_host_role.arn
-  execution_role_arn = aws_iam_role.ecs_execution_role.arn
-  
+  task_role_arn            = aws_iam_role.ecs_host_role.arn
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+
   container_definitions = jsonencode([
     {
       name      = "nodejs-container"
@@ -32,4 +32,29 @@ resource "aws_ecs_task_definition" "nodejs" {
       ]
     }
   ])
+}
+
+resource "aws_ecs_service" "nodejs" {
+  name            = "nodejs-ecs-service"
+  cluster         = aws_ecs_cluster.nodejs.id
+  task_definition = aws_ecs_task_definition.nodejs.arn
+  launch_type     = "FARGATE"
+  desired_count   = 1
+
+  depends_on = [
+    aws_iam_role_policy.ecs_execution_role_policy
+  ]
+
+  load_balancer {
+    container_name   = "nodejs-container"
+    container_port   = 3000
+    target_group_arn = aws_alb_target_group.nodejs.arn
+  }
+
+  network_configuration {
+    subnets          = aws_subnet.private.*.id
+    security_groups  = [aws_security_group.alb.id, aws_security_group.ecs.id]
+    assign_public_ip = false
+  }
+
 }
