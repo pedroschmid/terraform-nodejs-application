@@ -7,3 +7,12 @@ resource "aws_alb" "nodejs" {
 
   enable_deletion_protection = false
 }
+
+resource "aws_alb_target_group" "nodejs" {
+  name = "nodejs-alb-tg"
+  target_type = "ip"
+  protocol = "HTTP"
+  port = 3000
+  
+  vpc_id = aws_vpc.nodejs.id
+}
