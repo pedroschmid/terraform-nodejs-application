@@ -15,6 +15,16 @@ resource "aws_alb_target_group" "nodejs" {
   port        = 3000
 
   vpc_id = aws_vpc.nodejs.id
+
+  health_check {
+    path                = "/health_check"
+    port                = 3000
+    healthy_threshold   = 6
+    unhealthy_threshold = 2
+    timeout             = 2
+    interval            = 5
+    matcher             = "200"
+  }
 }
 
 resource "aws_alb_listener" "http" {
