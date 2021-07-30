@@ -56,7 +56,7 @@ resource "aws_eip" "nodejs" {
 
 resource "aws_nat_gateway" "nodejs" {
   allocation_id = aws_eip.nodejs.id
-  subnet_id = aws_subnet.public[0].id
+  subnet_id     = aws_subnet.public[0].id
 
   depends_on = [
     aws_internet_gateway.nodejs
@@ -67,3 +67,44 @@ resource "aws_nat_gateway" "nodejs" {
   }
 }
 
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.nodejs.id
+
+  tags = {
+    "Name" = "nodejs-public-route-table"
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.nodejs.id
+
+  tags = {
+    "Name" = "nodejs-private-route-table"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  count = length(aws_subnet.public)
+
+  route_table_id = aws_route_table.public.id
+  subnet_id      = element(aws_subnet.public.*.id, count.index)
+}
+
+resource "aws_route_table_association" "private" {
+  count = length(aws_subnet.private)
+
+  route_table_id = aws_route_table.private.id
+  subnet_id      = element(aws_subnet.private.*.id, count.index)
+}
+
+resource "aws_route" "public" {
+  destination_cidr_block = "0.0.0.0/0"
+  route_table_id         = aws_route_table.public.id
+  gateway_id             = aws_internet_gateway.nodejs.id
+}
+
+resource "aws_route" "private" {
+  destination_cidr_block = "0.0.0.0/0"
+  route_table_id         = aws_route_table.private.id
+  nat_gateway_id         = aws_nat_gateway.nodejs.id
+}
