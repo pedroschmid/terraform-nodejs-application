@@ -33,3 +33,37 @@ resource "aws_subnet" "private" {
     "Name" = "nodejs-private-subnet"
   }
 }
+
+resource "aws_internet_gateway" "nodejs" {
+  vpc_id = aws_vpc.nodejs.id
+
+  tags = {
+    "Name" = "nodejs-igw"
+  }
+}
+
+resource "aws_eip" "nodejs" {
+  vpc = true
+
+  depends_on = [
+    aws_internet_gateway.nodejs
+  ]
+
+  tags = {
+    "Name" = "nodejs-eip"
+  }
+}
+
+resource "aws_nat_gateway" "nodejs" {
+  allocation_id = aws_eip.nodejs.id
+  subnet_id = aws_subnet.public[0].id
+
+  depends_on = [
+    aws_internet_gateway.nodejs
+  ]
+
+  tags = {
+    "Name" = "nodejs-nat"
+  }
+}
+
