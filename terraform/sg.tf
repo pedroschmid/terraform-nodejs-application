@@ -1,7 +1,8 @@
 resource "aws_security_group" "alb" {
   name        = "nodejs-alb-sg"
   description = "Allows inboud traffic through ALB"
-  vpc_id      = aws_vpc.nodejs.id
+
+  vpc_id = aws_vpc.nodejs.id
 
   ingress {
     description = "HTTP ingress"
