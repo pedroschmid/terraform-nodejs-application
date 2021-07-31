@@ -28,6 +28,26 @@ resource "aws_ecs_task_definition" "nodejs" {
         {
           "name"  = "PORT",
           "value" = "3000"
+        },
+        {
+          "name"  = "DATABASE_HOST",
+          "value" = aws_db_instance.nodejs.address
+        },
+        {
+          "name"  = "DATABASE_PORT",
+          "value" = "3306"
+        },
+        {
+          "name"  = "DATABASE_NAME",
+          "value" = var.RDS_NAME
+        },
+        {
+          "name"  = "DATABASE_USER",
+          "value" = var.RDS_USERNAME
+        },
+        {
+          "name"  = "DATABASE_PASSWORD",
+          "value" = var.RDS_PASSWORD
         }
       ]
     }
