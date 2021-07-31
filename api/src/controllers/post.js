@@ -11,11 +11,11 @@ async function list(request, response, next) {
 }
 
 async function create(request, response, next) {
-  const { title, text } = request.body;
+  const { title, description } = request.body;
 
   try {
-    await Post.create({ title, text });
-    return httpResponse(response, 201, "Post created", { title, text });
+    await Post.create({ title, description });
+    return httpResponse(response, 201, "Post created", { title, description });
   } catch (error) {
     return httpResponse(response, 500, error.message, {});
   }
