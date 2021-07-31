@@ -20,3 +20,16 @@ async function create(request, response, next) {
     return httpResponse(response, 500, error.message, {});
   }
 }
+
+async function destroy(request, response, next) {
+  const { id } = request.params;
+
+  try {
+    await Post.destroy({ where: { id } });
+    return httpResponse(response, 200, "Post destroyed", { id });
+  } catch (error) {
+    return httpResponse(response, 500, error.message, {});
+  }
+}
+
+module.exports = { list, create, destroy }
