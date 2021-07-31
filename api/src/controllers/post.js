@@ -25,6 +25,9 @@ async function destroy(request, response, next) {
   const { id } = request.params;
 
   try {
+    const data = await Post.findOne({ where: { id }});
+    if (!data) return httpResponse(response, 404, "Post not found", {});
+
     await Post.destroy({ where: { id } });
     return httpResponse(response, 200, "Post destroyed", { id });
   } catch (error) {
@@ -32,4 +35,4 @@ async function destroy(request, response, next) {
   }
 }
 
-module.exports = { list, create, destroy }
+module.exports = { list, create, destroy };
