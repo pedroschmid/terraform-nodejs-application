@@ -45,3 +45,19 @@ variable "PRIVATE_SUBNETS_CIDR" {
   type        = list(string)
   description = "Private subnet cidr values"
 }
+
+# RDS #
+variable "RDS_NAME" {
+  type        = string
+  description = "RDS database name"
+}
+
+variable "RDS_USERNAME" {
+  type        = string
+  description = "RDS database username"
+}
+
+variable "RDS_PASSWORD" {
+  type        = string
+  description = "RDS database password"
+}
