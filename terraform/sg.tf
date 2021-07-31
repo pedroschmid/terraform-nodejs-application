@@ -50,3 +50,30 @@ resource "aws_security_group" "ecs" {
     "Name" = "nodejs-ecs-sg"
   }
 }
+
+resource "aws_security_group" "rds" {
+  name        = "nodejs-rds-sg"
+  description = "Allow inbound traffic from ECS to RDS"
+
+  vpc_id = aws_vpc.nodejs.id
+
+  ingress {
+    description     = "ECS ingress"
+    protocol        = "tcp"
+    from_port       = 3306
+    to_port         = 3306
+    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.ecs.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    "Name" = "nodejs-rds-sg"
+  }
+}
