@@ -54,7 +54,11 @@ resource "aws_ecs_service" "nodejs" {
   network_configuration {
     assign_public_ip = false
     subnets          = aws_subnet.private.*.id
-    security_groups  = [aws_security_group.alb.id, aws_security_group.ecs.id]
+    security_groups = [
+      aws_security_group.alb.id,
+      aws_security_group.ecs.id,
+      aws_security_group.rds.id
+    ]
   }
 
 }
