@@ -19,4 +19,11 @@ const sequelize = new Sequelize(
   }
 );
 
+try {
+  sequelize.authenticate();
+  sequelize.sync();
+} catch (error) {
+  throw new Error("Could not connect to database");
+}
+
 module.exports = { sequelize };
